@@ -1,0 +1,209 @@
+/*qml main.qml */
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+
+import QtQuick.Window 2.15
+
+Window{
+    width: 360
+    height: 720
+    visible: true
+    title: "Tash-Master"
+    StackView {
+        id: contentFrame
+        anchors.fill: parent
+        height: parent.height
+        width: parent.width
+        initialItem: Qt.resolvedUrl("qrc:/Main_Page.qml")
+    }
+    Component.onCompleted: {
+         contentFrame.replace("qrc:/Main_Page.qml")
+     }
+}
+
+/* load_Page.qml */
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+
+Item {
+     width: parent.width
+     height: parent.height
+     Rectangle{
+         id: bgRec
+         anchors.fill: parent
+         color: "#2C3E50"
+     BusyIndicator {
+         id: busyIndicator
+         anchors.centerIn: parent
+         }
+     }
+}
+/* Main_Page.qml */
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+
+Item {
+    width: parent.width
+    height: parent.height
+    Rectangle {
+        id: bgRec
+        anchors.fill: parent
+        color: "#2C3E50"
+}
+    Label{
+        anchors.top: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: "Keo phan duoi len de nhap tap"
+        color: "white"
+    }
+
+    ListView{
+        id: listView
+        anchors.fill: parent
+        header: Item{
+            id: headListView
+            width: parent.width
+            height: 50
+            Label{
+                anchors.centerIn: parent
+                text: "Master_view"
+                color:"white"
+            }
+        }
+            headerPositioning: ListView.OverlayHeader
+
+            model: ListModel{
+               id: myListModel
+            }
+
+           delegate: MouseArea{
+               id: myDelegate
+               width: parent.width
+               height: 50
+
+               onPressAndHold: {
+                listview.currentIndex = index
+                myListModel.remove(listview.currentIndex)
+                           }
+               Label {
+                   id: titel
+                   text: titelText
+                   anchors.left: parent.left
+                   anchors.verticalCenter: parent.verticalCenter
+                   anchors.leftMargin:  20
+               }
+               Label {
+                   id: date
+                   text: dateText
+                   anchors.right: parent.right
+                   anchors.verticalCenter: parent.verticalCenter
+                   anchors.rightMargin:  20
+                   color: "white"
+            }   }
+           footer: Item{
+               id:footerListView
+               width: parent.width
+               height: 50
+
+               RoundButton{
+                   id: addTaskButton
+                   width: 50
+                   height: 40
+                   anchors.verticalCenter: parent.verticalCenter
+                   anchors.right: parent.right
+                   anchors.rightMargin: 10
+                   text: "+"
+                   onClicked: {
+                       addTaskButton.objectName()
+
+               }  }
+
+           }
+
+    }
+    /* chua ro sao lai lam the nay    */
+                AddTask_Drawer {
+                    id: addTask_Drawer
+                    }
+
+
+}
+/* AddTask_Drawer.qml */
+import QtQuick 2.12
+import QtQuick.Controls 2.15
+Item {
+    width: parent.width
+    height: parent.height
+    Drawer{
+    id: addTask_Drawer
+     width: parent.width
+     height: parent.height/2
+     edge: Qt.BottomEdge
+     background: Rectangle{
+     anchors.fill: parent
+     color: "#2C3E50"
+    }
+    Label{
+        anchors.horizontalCenter: parent.horizontalCenter
+         anchors.top: parent.top
+         anchors.topMargin: 10
+         text: "Add New"
+         color: "white"
+    }
+    TextField{
+         id: titelInput
+         placeholderText: qsTr("Your Task")
+         anchors.horizontalCenter: parent.horizontalCenter
+         anchors.top: parent.top
+         anchors.topMargin: 50
+
+    }
+    Item {
+         width: parent.width/1.4
+         height: 50
+         anchors.horizontalCenter: parent.horizontalCenter
+         anchors.top: parent.top
+         anchors.topMargin: 125
+
+
+        TextField{
+            id: dateInput
+            height: parent.height
+            width: parent.width/2.5
+            anchors.left: parent.left
+            placeholderText: "dd/mm/yyyy"
+
+            }
+
+        TextField{
+            id: timeInput
+            height: parent.height
+            width: parent.width/3
+            anchors.right: parent.right
+            placeholderText: "00:00"
+        }
+    }
+    RoundButton{
+        id: submitButton
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: 200
+        text: "Submit"
+        width: 200
+         onClicked: {
+         if(titelInput.text !== "" &&
+                dateInput.text !== ""
+                && timeInput.text !== ""){
+         myListModel.append({"titelText": titelInput.text,
+                    "dateText":dateInput.text+ "|"+ timeInput.text})
+         titelInput.clear()
+         dateInput.clear()
+         timeInput.clear()
+         addTaskDrawer.close()
+    }
+ }
+    }
+}
+}
+
+
